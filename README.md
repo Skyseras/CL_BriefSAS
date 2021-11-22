@@ -23,7 +23,8 @@ Le menu principal permet de :
 - Quitter l’application
 
 Implémenter les fonctionnalités cité au menu principal. Utiliser les algorithmes de recherche et de tri qui vous convient.
-*N.B*: L’utilisateur doit retourner au menu principal après chaque opération**
+
+**N.B: L’utilisateur doit retourner au menu principal après chaque opération**
 
 ### Challenges Supplémentaires
 
