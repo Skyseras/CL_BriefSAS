@@ -1,0 +1,90 @@
+Youcode.2020
+INTERPRETER COMPILER SCRIPTER
+
+lundi
+langage c condition 
+webinar avec frederic cofounder de simplon
+live coding condition
+veille 
+algorithme de tri
+algorithme
+les boucle
+quiz 1st week
+
+mardi
+Presentation des veilles
+Explication des algorithme et son logiciel de Algobox
+
+mercredi
+continuer a travailler sur les boucle
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var liste pour lutilisateur
+ A B C D E F
+croissant wela decoissant
+
+
+decomposer la liste en liste de deux element
+
+
+
+
+
+
+
+
+
+
+
+prend A
+prend B
+compare A et B
+*min reste
+max descend
+prend C
+compare C et "qui reste*"
+min reste
+max descent
+prend D
+compare D et "qui reste*"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
