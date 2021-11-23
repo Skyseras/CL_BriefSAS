@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
+#include <conio.h>
+int chercherCompteParCin(char cin[]);
 struct info_compte
 {
    char client_nom[30];
@@ -8,22 +10,9 @@ struct info_compte
    char client_cin[10];
    float fond_base;     
 };
-struct info_compte account[100];
+struct info_compte tcompte[100];
 
-FILE *fptr;
-// fptr = fopen("C:\\Users\\Youcode\\CL_BriefSAS\\BP_GB.txt","w");
-/*if(fptr == NULL){
-      printf("Error!");   
-      exit(1);             
-   }
-   
-   printf("Enter num: ");
-   scanf("%d",&num);
-   fprintf(fptr,"%d",num);
-   fclose(fptr);
-   
-   */
-
+int CompteDispo=0;
 
 int main()
 {
@@ -41,6 +30,21 @@ int main()
       case 2:
          pcompte();
          break;
+      case 3:
+         char cin[20]; 
+         printf("donner votre cin:");
+         scanf("%s", &cin);
+         mon_comptesolde(cin);
+         break;
+      case 4:
+         pcompte();
+         break;
+      case 5:
+         pcompte();
+         break;
+      case 6:
+         pcompte();
+         break;
       default:
          printf("Please enter one of the options");
          printf("(1/2/3/4/5/6) to continue \n ");
@@ -52,44 +56,26 @@ int main()
 
 void menu()
 {
-    printf("\n1. Creer un nouveau compte \n");
-    printf("2. Creer plusieurs comptes \n");
-    printf("3. Retrait argent \n");
-    printf("4. Depot argent \n");
-    printf("5. Afficher mon solde \n");
-    printf("6. Rechercher les comptes par CIN \n");
-    printf("7. Quitter application \n\n");
+   printf("\n1. Creer un nouveau compte \n");
+   printf("2. Creer plusieurs comptes \n");
+   printf("3. Afficher mon compte/solde \n");
+   printf("4. Depot argent \n");
+   printf("5. Retrait argent \n");
+   printf("6. Rechercher les comptes par CIN \n");
+   printf("7. Quitter application \n\n");
 }
 
 void compte(){
-   char client_nom[30];
-   char client_prenom[30];
-   char client_cin[10];
-   float fond_base;  
-   int choix;
    printf("\nEntrez votre nom : ");
-   scanf("%s", &client_nom);
+   scanf("%s", tcompte[CompteDispo].client_nom);
    printf("\nEntrez votre prenom : ");
-   scanf("%s", &client_prenom);
+   scanf("%s", tcompte[CompteDispo].client_prenom);
    printf("\nEntrez votre CIN : ");
-   scanf("%s", &client_cin);
+   scanf("%s", tcompte[CompteDispo].client_cin);
    printf("\nDeposez un fond de base : ");
-   scanf("%f", &fond_base);
+   scanf("%f", &tcompte[CompteDispo].fond_base);
    printf("\n*** Votre compte a ete creer avec succes ***\n");
-   printf("\n1. Voir le compte");
-   printf("\n2. Continuer\n");
-   scanf("%d", &choix);
-   switch (choix)
-   {
-   case 1:
-      printf("\n*** Information du compte ***\n");
-      printf("\nNom et Prenom : %s %s", client_nom, client_prenom);
-      printf("\nCIN : %s", client_cin);
-      printf("\nMontant : %f\n", fond_base);
-      break;
-   default:
-      break;
-   }
+   CompteDispo++;
 }
 
 void pcompte(){
@@ -102,4 +88,28 @@ void pcompte(){
       compte();
    i++;
    }
+}
+
+void mon_comptesolde(char cin[])
+{
+   int indice=chercherCompteParCin(cin);
+   if(indice==-1)
+      {
+         printf("le cin n'a a pas de compte");
+
+      }else{
+         printf("%s %s %s %f\n", tcompte[indice].client_cin, tcompte[indice].client_nom, tcompte[indice].client_prenom,tcompte[indice].fond_base);
+      }
+}
+
+int chercherCompteParCin(char cin[]){
+   for(int i=0; i<CompteDispo; i++){
+      while (i!=CompteDispo)
+      {
+         if(strcmp(tcompte[i].client_cin,cin)==0)
+         return i;
+      }
+   }
+   return -1;
+
 }
