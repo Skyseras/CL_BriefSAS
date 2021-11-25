@@ -1,165 +1,169 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 typedef struct info_compte{
-   char client_nom[30];
-   char client_prenom[30];
-   char client_cin[10];
+   char client_nom_prenom[30];
+   int client_cin;
    float montant;
 }info_compte;
 
-int menu()
-{
-   int option;
-   printf("\n1. Creer un nouveau compte \n");
-   printf("2. Creer plusieurs comptes \n");
-   printf("3. Afficher mon compte/solde \n");
-   printf("4. Depot argent \n");
-   printf("5. Retrait argent \n");
-   printf("6. Afficher les comptes \n");
-   printf("7. Quitter application \n\n");
-   printf("Entrez une option (1/2/3/4/5/6/7) pour continuer : "); 
-   scanf("%d", &option);
-   printf("\n");
-   return option;
+typedef struct test{
+    char client_nom_prenom[30];
+    int client_cin;
+    float montant;
+}test;
+
+int index_compte_general=0;
+
+void ajouter(info_compte liste[80], int s){
+    int i;
+    for (i = 0; i < s; i++){
+        printf("\nCreation du compte #%d", index_compte_general + 1);
+
+        printf("\nEntrez le CIN : ");
+        scanf("%d", &liste[index_compte_general].client_cin);
+        fflush(stdin);
+        printf("Entrez le nom et prenom : ");
+        gets(liste[index_compte_general].client_nom_prenom);
+        liste[index_compte_general].montant = 0;
+        index_compte_general++;
+    } 
 }
 
-info_compte creer_compte(){
-    info_compte client;
-    printf("Entrez votre Nom : ");
-    scanf("%s", client.client_nom);
-    printf("Entrez votre Prenom : ");
-    scanf("%s", client.client_prenom);
-    printf("Entrez votre CIN : ");
-    scanf("%s", client.client_cin);
-    printf("Deposez un fond de base : ");
-    scanf("%f", &client.montant);
-    return client;
+void afficher(info_compte liste[80], int s){
+    int i;
+    printf("\n\n***CIN***\t***Nom / Prenom***\t***Montant***\n");
+    for (i = 0; i < s; i++){
+        printf("%d\t        %s\t        %f\n", liste[i].client_cin, liste[i].client_nom_prenom,
+            liste[i].montant);
+    } 
 }
 
-void affcompte(info_compte client)
-{
-    printf("-----------------------------\n");
-    printf("CIN : %s\n", client.client_cin);
-    printf("nomCLient : %s\n", client.client_nom);
-    printf("prenomClient : %s\n", client.client_prenom);
-    printf("montant : %.2f\n", client.montant);
-    printf("-----------------------------\n");
-}
+int chercher(info_compte liste[80], int x, int cin){
+    int i;
 
-typedef struct classeur
-{
-    info_compte comptes[10];
-    int size;
-}classeur;
-
-classeur creer_position_client()
-{
-    classeur pos_client;
-    pos_client.size = 0;
-    return pos_client;
-}
-
-int aff_par_cin(classeur test, char* cin)
-{
-    int i = 0;
-    for(i = 0; i < test.size; i++)
-    {
-        if(strcmp(test.comptes[i].client_cin, cin) == 0)
-        {
+    for (i = 0; i < x; i++){
+        if (liste[i].client_cin == cin){
             return i;
+        } 
+    }
+    return  - 1;
+}
+
+void deposer(info_compte liste[], int x, int cin, int m){
+    int i = chercher(liste, x, cin);
+    if (i ==  - 1){
+        printf("Pas de compte pour ce CIN.");
+    } 
+    else{
+        liste[i].montant += m;
+    }
+}
+
+void retirer(info_compte liste[], int x, int cin, int m){
+    int i = chercher(liste, x, cin);
+    if (i ==  - 1){
+        printf("Pas de compte pour ce CIN.\n");
+    } 
+    else if (liste[i].montant < m){
+        printf("FOND INSUFFISANT.\n");
+    }
+    else{
+        liste[i].montant -= m;
+    }
+}
+
+void trierCroissant(info_compte liste[])
+{
+    int i;
+    int j;
+    for(i = 1; i < index_compte_general; i++)
+    {
+        for(j = i + 1; j < index_compte_general + 1; j++)
+        {
+            if(liste[i].montant > liste[j].montant)
+            {
+                liste[20] = liste[i];
+                liste[i] = liste[j];
+                liste[j] = liste[20];
+            }
         }
     }
-    return -1;
 }
 
-void ajouter_compte(classeur* pos_client, info_compte client)
+int main()
 {
-    pos_client->comptes[pos_client->size] = client;
-    pos_client->size++;
+    info_compte data[20];
+    int n, option, compte_cin, xmontant, index;
+
+    printf("******** Banque Youcode 'BIENVENUE' ********\n\n");
+    printf("Notre banque ne dispose d'aucun client, combien voulez vous ajouter? : ");
+    scanf("%d", &n);
+    ajouter(data, n);
+    do
+    {
+
+        printf("\n1. Ajoutez un nouveau compte \n");
+        printf("2. Ajoutez plusieurs comptes \n");
+        printf("3. Afficher tout les comptes \n");
+        printf("4. Afficher mon compte/solde \n");
+        printf("5. Depot argent \n");
+        printf("6. Retrait argent \n");
+        printf("7. Afficher croissant \n");
+        printf("0. Quitter application \n\n");
+        printf("\nEntrez une option (0-7) : ");
+        scanf("%d", &option);
+        switch (option){
+            case 1:
+                n=1;
+                ajouter(data, n);
+                break;
+            case 2:
+                printf("Combien voulez vous ajouter? : ");
+                scanf("%d", &n);
+                ajouter(data, n);
+                break;
+            case 3:
+                afficher(data, index_compte_general);
+                break;
+            case 4:
+                printf("Entrez CIN : ");
+                scanf("%d", &compte_cin);
+                index = chercher(data, index_compte_general, compte_cin);
+                if (index ==  - 1)
+                {
+                    printf("Pas de compte avec ce CIN.");
+                }
+                else
+                {
+                    printf("CIN : %d\nNom et Prenom: %s\nMontant: %f\n",
+                        data[index].client_cin, data[index].client_nom_prenom,
+                        data[index].montant);
+                }
+                break;
+            case 5:
+                printf("Entrez CIN : ");
+                scanf("%d", &compte_cin);
+                printf("Entrez le montant a deposer : ");
+                scanf("%d", &xmontant);
+                deposer(data, index_compte_general, compte_cin, xmontant);
+                break;
+            case 6:
+                printf("Entrez CIN : ");
+                scanf("%d", &compte_cin);
+                printf("Entrez le montant a retirer : ");
+                scanf("%d", &xmontant);
+                retirer(data, index_compte_general, compte_cin, xmontant);
+                break;
+            case 7:
+                trierCroissant(data);
+                break;
+        }
+        printf("\nEntrer pour continuer...");
+        getch();
+    }
+    while (option != 0);
+
+    return 0;
 }
-
-
-int main(){
-   info_compte client;
-   int fin = 0;
-
-   while(!fin){
-      system("CLS");
-      printf("\n******** La banque Youcode est a votre disposition ********\n");
-
-      switch(menu()){
-         case 1:
-               client = creer_compte();
-               ajouter_compte(&client, client);
-               break;
-         case 2:
-               system("CLS");
-               int nc;
-               int i=1;
-               printf("\nQuel est le nombre de comptes a creer : ");
-               scanf("%d",&nc);
-                  while (i<=nc) {
-                     printf("\n*** Compte N%d ***\n",i);
-                     client = creer_compte();
-                     ajouter_compte(&client, client);
-                     i++;
-                  }
-               break;
-         case 3:
-               system("CLS");
-               break;
-         case 4:
-               system("CLS");
-               break;
-         case 5:
-               system("CLS");
-               break;
-         case 6:
-               fin = 1;
-               break;
-         default:
-               printf("\nerreur de saisie essayer a nouveau\n");
-               break;
-      }
-      
-   }
-   
-   printf("\napplication fermer !!\n");
-}
-   
-   
-   /*while(1)
-   {
-      printf("\n******** La banque Youcode est a votre disposition ********\n");
-      menu();
-      switch (option){
-      case 1:
-         compte();
-         break;
-      case 2:
-         pcompte();
-         break;
-      case 3:
-         char cin[20]; 
-         printf("donner votre cin:");
-         scanf("%s", cin);
-         mon_comptesolde(cin);
-         break;
-      case 4:
-         pcompte();
-         break;
-      case 5:
-         pcompte();
-         break;
-      case 6:
-         pcompte();
-         break;
-      default:
-         printf("Please enter one of the options");
-         printf("(1/2/3/4/5/6) to continue \n ");
-         break;
-      }
-   }
-   return 0;
-}*/
