@@ -2,21 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct info_compte{
+typedef struct info_compte2{
    char client_nom_prenom[30];
    int client_cin;
    float montant;
 }info_compte;
 
-typedef struct test{
-    char client_nom_prenom[30];
-    int client_cin;
-    float montant;
-}test;
+info_compte liste[500];
 
 int index_compte_general=0;
 
-void ajouter(info_compte liste[80], int s){
+void ajouter(int s){
     int i;
     for (i = 0; i < s; i++){
         printf("\nCreation du compte #%d", index_compte_general + 1);
@@ -31,16 +27,17 @@ void ajouter(info_compte liste[80], int s){
     } 
 }
 
-void afficher(info_compte liste[80], int s){
+void afficher(int s, int min){
     int i;
     printf("\n\n***CIN***\t***Nom / Prenom***\t***Montant***\n");
     for (i = 0; i < s; i++){
+        if (liste[i].montant >= min)
         printf("%d\t        %s\t        %f\n", liste[i].client_cin, liste[i].client_nom_prenom,
             liste[i].montant);
     } 
 }
 
-int chercher(info_compte liste[80], int x, int cin){
+int chercher(int x, int cin){
     int i;
 
     for (i = 0; i < x; i++){
@@ -51,8 +48,8 @@ int chercher(info_compte liste[80], int x, int cin){
     return  - 1;
 }
 
-void deposer(info_compte liste[], int x, int cin, int m){
-    int i = chercher(liste, x, cin);
+void deposer(int x, int cin, int m){
+    int i = chercher(x, cin);
     if (i ==  - 1){
         printf("Pas de compte pour ce CIN.");
     } 
@@ -61,8 +58,8 @@ void deposer(info_compte liste[], int x, int cin, int m){
     }
 }
 
-void retirer(info_compte liste[], int x, int cin, int m){
-    int i = chercher(liste, x, cin);
+void retirer(int x, int cin, int m){
+    int i = chercher(x, cin);
     if (i ==  - 1){
         printf("Pas de compte pour ce CIN.\n");
     } 
@@ -74,22 +71,54 @@ void retirer(info_compte liste[], int x, int cin, int m){
     }
 }
 
-void trierCroissant(info_compte liste[])
+void trierCroissant()
 {
     int i;
     int j;
-    for(i = 1; i < index_compte_general; i++)
+    
+    info_compte tmp;
+    for(i = 0; i < index_compte_general; i++)
     {
-        for(j = i + 1; j < index_compte_general + 1; j++)
+        for(j = 0; j < index_compte_general; j++)
         {
-            if(liste[i].montant > liste[j].montant)
+            if(liste[j+1].client_cin && liste[j].montant > liste[j+1].montant)
             {
-                liste[20] = liste[i];
-                liste[i] = liste[j];
-                liste[j] = liste[20];
+                tmp = liste[j];
+                liste[j] = liste[j + 1];
+                liste[j + 1] = tmp;
             }
         }
     }
+}
+
+void trierDecroissant()
+{
+    int i;
+    int j;
+    info_compte tmp;
+    for(i = 0; i < index_compte_general; i++)
+    {
+        for(j = 0; j < index_compte_general; j++)
+        {
+            if(liste[j+1].client_cin && liste[j].montant < liste[j+1].montant)
+            {
+                tmp = liste[j];
+                liste[j] = liste[j + 1];
+                liste[j + 1] = tmp;
+            }
+        }
+    }
+}
+
+void fd(){
+    trierDecroissant();
+    if (liste[0].client_nom_prenom)
+        liste[0].montant *= 1.013;
+    if (liste[1].client_nom_prenom)
+        liste[1].montant *= 1.013;
+    if (liste[2].client_nom_prenom)
+        liste[2].montant *= 1.013;
+    printf("Fidelisation activer avec succee!");
 }
 
 int main()
@@ -100,7 +129,7 @@ int main()
     printf("******** Banque Youcode 'BIENVENUE' ********\n\n");
     printf("Notre banque ne dispose d'aucun client, combien voulez vous ajouter? : ");
     scanf("%d", &n);
-    ajouter(data, n);
+    ajouter(n);
     do
     {
 
@@ -110,27 +139,29 @@ int main()
         printf("4. Afficher mon compte/solde \n");
         printf("5. Depot argent \n");
         printf("6. Retrait argent \n");
-        printf("7. Afficher croissant \n");
+        printf("7. Trier croissant a un montant \n");
+        printf("8. Trier decroissant a un montant \n");
+        printf("9. Activer la fidelisation. \n");
         printf("0. Quitter application \n\n");
-        printf("\nEntrez une option (0-7) : ");
+        printf("\nEntrez une option (0-9) : ");
         scanf("%d", &option);
         switch (option){
             case 1:
                 n=1;
-                ajouter(data, n);
+                ajouter(n);
                 break;
             case 2:
                 printf("Combien voulez vous ajouter? : ");
                 scanf("%d", &n);
-                ajouter(data, n);
+                ajouter(n);
                 break;
             case 3:
-                afficher(data, index_compte_general);
+                afficher(index_compte_general, 0);
                 break;
             case 4:
                 printf("Entrez CIN : ");
                 scanf("%d", &compte_cin);
-                index = chercher(data, index_compte_general, compte_cin);
+                index = chercher(index_compte_general, compte_cin);
                 if (index ==  - 1)
                 {
                     printf("Pas de compte avec ce CIN.");
@@ -147,17 +178,31 @@ int main()
                 scanf("%d", &compte_cin);
                 printf("Entrez le montant a deposer : ");
                 scanf("%d", &xmontant);
-                deposer(data, index_compte_general, compte_cin, xmontant);
+                deposer(index_compte_general, compte_cin, xmontant);
                 break;
             case 6:
                 printf("Entrez CIN : ");
                 scanf("%d", &compte_cin);
                 printf("Entrez le montant a retirer : ");
                 scanf("%d", &xmontant);
-                retirer(data, index_compte_general, compte_cin, xmontant);
+                retirer(index_compte_general, compte_cin, xmontant);
                 break;
             case 7:
-                trierCroissant(data);
+                int m;
+                scanf("%d", &m);
+                printf("Donner le montant : ");
+                trierCroissant();
+                afficher(index_compte_general, m);
+                break;
+            case 8:
+                int m2;
+                printf("Donner le montant : ");
+                scanf("%d", &m2);
+                trierDecroissant();
+                afficher(index_compte_general, m2);
+                break;
+            case 9:
+                fd();
                 break;
         }
         printf("\nEntrer pour continuer...");
